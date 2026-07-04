@@ -1,31 +1,43 @@
+/*
+=========================================================================
+        RRRRR   EEEEE    GGGG      FFFFF III  L       EEEEE
+        R    R  E       G          F      I   L       E
+        RRRR    EEEE   G   GG      FFFF   I   L       EEEE
+        R   R   E       G   G      F      I   L       E
+        R    R  EEEEE    GGGG      F     III  LLLLLL  EEEEE
+=========================================================================
+*/
+
+
 module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK, RESET);
-    
-                                                /*
+
+    /*
     ============================================
-                Port Declarations
-    ============================================*/
+        Port Declarations
+    ============================================
+    */
 
     // Inputs
-    
-    // Input value to store  
-    input [7:0] IN;   
+
+    // Input value to store
+    input [7:0] IN;
 
     // Clock input, Write command, Reset commmand
-    input CLK, WRITE, RESET;                            
-    
+    input CLK, WRITE, RESET;
+
     // Input register address to store
     // Output register adress 1 to output value 1
     // Output register adress 2 to output value 2
-    input [2:0] INADDRESS, OUT1ADDRESS, OUT2ADDRESS;    
-    
+    input [2:0] INADDRESS, OUT1ADDRESS, OUT2ADDRESS;
+
     // OUT1 and OUT2 is not declared as reg becuase continuous assignment doesn't allow that.
     // Therefore, they are kept as net values
     output wire [7:0] OUT1, OUT2;
 
 
-                                                /*
+    /*
     ============================================
-          Internal Storage (8x8 register)
+    Internal Storage (8x8 register)
     ============================================*/
 
     // Declaring an array of 8, 8-byte arrays
@@ -35,9 +47,9 @@ module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK,
     integer i;
 
 
-                                                /*
+    /*
     ============================================
-            Reading Logic (Asynchronous)
+    Reading Logic (Asynchronous)
     ============================================*/
 
     // Continuous assignment to OUT1 and OUT2
@@ -46,32 +58,36 @@ module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK,
     assign #2 OUT2 = reg_array[OUT2ADDRESS];
 
 
-                                                /*
+    /*
     ============================================
-         Write and Reset Logic (Synchronous)
+    Write and Reset Logic (Synchronous)
     ============================================*/
 
     // This 'always' block triggers when the clock is set to 1
-    always @ (posedge CLK) begin
-        
+    always @ (posedge CLK)
+    begin
+
         // If reset input is 1, all of the registers will be cleared
-        if (RESET == 1'b1) begin
-            
-            // Clearing every byte of the register in a loop
-            for (i = 0; i < 8 ; i = i + 1) begin
-                reg_array[i] <= #1 8'b00000000;
-            end
+        if (RESET == 1'b1)
+        begin
+
+        // Clearing every byte of the register in a loop
+        for (i = 0; i < 8 ; i = i + 1)
+        begin
+            reg_array[i] <= #1 8'b00000000;
+        end
 
         end
 
         // If write input is 1, right the IN value into the register[INADDRES]
-        else if (WRITE == 1'b1) begin
-            
-            // Non-blocking assignment to the register
-            reg_array[INADDRESS] <= #1 IN;
+        else if (WRITE == 1'b1)
+        begin
+        #0;
+        // Non-blocking assignment to the register
+        reg_array[INADDRESS] <= #1 IN;
 
-        end    
-        
+        end
+
     end
 
 endmodule

@@ -8,6 +8,8 @@
 =========================================================================
 */
 
+`timescale 1ns/100ps
+
 module alu(DATA1, DATA2, SELECT, RESULT, ZERO);
 
     /*

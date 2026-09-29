@@ -4,6 +4,8 @@
 =============================================
 */
 
+`timescale 1ns/100ps
+
 // Adder module to calculate next PC
 module pc_adder (
 		input   [31:0]  PC_IN,

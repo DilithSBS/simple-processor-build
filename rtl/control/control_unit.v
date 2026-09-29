@@ -4,11 +4,15 @@
                 CONTROL UNIT      
 =============================================
 */
+
+`timescale 1ns/100ps
+
 module control_unit(
 
     input       [7:0]   OP_CODE,
 
-    output reg          WRITE_ENABLE,		// 1 to enable write
+    output               WRITE_ENABLE_OUT,		// 1 to enable write
+    // output reg          WRITE_ENABLE,		// 1 to enable write
     output reg          ORIG_OR_TWOS_COMP,  // 1 to select twos complement
     output reg          REG_OR_IMM,			// 1 to select immediate value
 
@@ -23,9 +27,11 @@ module control_unit(
 
     output reg          MEMVAL_OR_ALURES,   // 1 to select memory value, 0 to select ALU result
 
-    input               BUSYWAIT
+    input               BUSYWAIT_
 
     );
+
+    reg WRITE_ENABLE;
 
     always @(*)
     begin
@@ -282,9 +288,11 @@ module control_unit(
             end
         
         endcase
-    
+        
     end
-    
+
+    assign WRITE_ENABLE_OUT = WRITE_ENABLE && ~BUSYWAIT_;
+
 
 endmodule
 

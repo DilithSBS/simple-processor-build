@@ -4,6 +4,7 @@
 =============================================
 */
 
+`timescale 1ns/100ps
 
 module mux_2to1(
 		input [7:0] INPUT1, INPUT2,

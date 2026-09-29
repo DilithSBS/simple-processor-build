@@ -3,6 +3,9 @@
 			Two's complement module    
 =============================================
 */
+
+`timescale 1ns/100ps
+
 module twos_complement(
 		input [7:0] IN_VAL,
 		output [7:0] OUT_VAL

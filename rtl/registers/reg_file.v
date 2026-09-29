@@ -8,6 +8,7 @@
 =========================================================================
 */
 
+`timescale 1ns/100ps
 
 module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK, RESET);
 
@@ -66,6 +67,8 @@ module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK,
     // This 'always' block triggers when the clock is set to 1
     always @ (posedge CLK)
     begin
+        
+        #1; // Delay to allow BUSYWAIT and other signals to settle from race conditions
 
         // If reset input is 1, all of the registers will be cleared
         if (RESET == 1'b1)
@@ -74,7 +77,7 @@ module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK,
         // Clearing every byte of the register in a loop
         for (i = 0; i < 8 ; i = i + 1)
         begin
-            reg_array[i] <= #1 8'b00000000;
+            reg_array[i] <= 8'b00000000;
         end
 
         end
@@ -82,9 +85,8 @@ module reg_file(IN, OUT1, OUT2, INADDRESS, OUT1ADDRESS, OUT2ADDRESS, WRITE, CLK,
         // If write input is 1, right the IN value into the register[INADDRES]
         else if (WRITE == 1'b1)
         begin
-        #0;
         // Non-blocking assignment to the register
-        reg_array[INADDRESS] <= #1 IN;
+        reg_array[INADDRESS] <= IN;
 
         end
 

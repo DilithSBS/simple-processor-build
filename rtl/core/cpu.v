@@ -37,6 +37,8 @@
 ====================================================
 */
 
+`timescale 1ns/100ps
+
 `include "alu.v"
 `include "reg_file.v"
 `include "control_unit.v"
@@ -47,35 +49,35 @@
 
 
 module cpu (
-		PC,
-		INSTRUCTION,
-		CLK,
-		RESET,
-		MEM_ADDR,
-		MEM_RD,
-		MEM_WR,
-		MEM_WRITE_DATA,
-		MEM_READ_DATA,
-		BUSYWAIT
-	);
+
 	/*
 	=============================================
 					Port Declarations
 	=============================================
 	*/
-	input               CLK,RESET;          // For PC and the reg_file
-	input       [31:0]  INSTRUCTION;        // Instruction to be executed
 
-	input       [7:0]   MEM_READ_DATA;      // Data read from memory
-	input 		        BUSYWAIT;           // Busywait control flag to indicate memory is busy due to read or write operation
+	// For PC and the reg_file
+	input               CLK,
+	input				RESET,          
 
-	output 		[7:0]   MEM_ADDR;           // Memory address to read or write
-	output 			    MEM_RD, MEM_WR;     // Read or write memory control flag
-	output 		[7:0]   MEM_WRITE_DATA;     // Data to written into memory
+	input       [31:0]  INSTRUCTION,        // Instruction to be executed
+
+	input       [7:0]   MEM_READ_DATA,      // Data read from memory
+	input 		        BUSYWAIT,           // Busywait control flag to indicate memory is busy due to read or write operation
+
+	output 		[7:0]   MEM_ADDR,           // Memory address to read or write
+	output 			    MEM_RD, 
+	output				MEM_WR,     // Read or write memory control flag
+	output 		[7:0]   MEM_WRITE_DATA,     // Data to written into memory
+
+	input       	    ICACHE_BUSYWAIT,
+	output	reg         ICACHE_READ,
 
 
-	// adder ports
-	output  reg [31:0]  PC;                 // Program Counter
+	output  reg [31:0]  PC                  // Program Counter
+	);
+
+	// pc-adder ports
 	wire        [31:0]  next_pc;            // next_pc = PC + 4
 
 	// jump_branch_adder ports
@@ -152,7 +154,7 @@ module cpu (
 
 	control_unit my_control_unit(
 					.OP_CODE(op_code),
-					.WRITE_ENABLE(write_enable),
+					.WRITE_ENABLE_OUT(write_enable),
 					.ORIG_OR_TWOS_COMP(reg2_or_twos_comp),
 					.REG_OR_IMM(reg_or_imm),
 					.ALU_OP(select),
@@ -162,7 +164,7 @@ module cpu (
 					.READ_MEM(MEM_RD),
 					.WRITE_MEM(MEM_WR),
 					.MEMVAL_OR_ALURES(memval_or_alures),
-					.BUSYWAIT(BUSYWAIT)
+					.BUSYWAIT_(BUSYWAIT)
 				);
 
 	alu my_alu(
@@ -246,27 +248,32 @@ module cpu (
 	// Memory address is the result of the ALU operation
 	assign MEM_ADDR = alu_result;
 
+	always @(PC) begin
+		ICACHE_READ = 1'b1;
+	end
 
 
 
 	always @(posedge CLK)
 	
 	begin
-		if (RESET == 1)
-		begin
-			#1 PC <= 32'b0;
+
+        #1; // Delay to allow BUSYWAIT to settle from memory module's blocking assignments
+		
+		if (RESET == 1) begin
+			PC <= 32'b0;
 		end
 
-		else if (BUSYWAIT != 1'b1) // Update PC only when not busy
+		else if (BUSYWAIT != 1'b1 && ICACHE_BUSYWAIT != 1'b1) // Update PC only when not busy
 		begin
 
 			// Select jumped_pc if it is a jump instruction or a beq instruction or a bne instruction
 			if ((jump == 1'b1) || ((branch == 1'b1) && (zero == 1'b1)) || ((branch_ne == 1'b1) && (zero == 1'b0)))
-				#1 PC <= jumped_pc;
+				PC <= jumped_pc;
 
 			// Else select pc+4
 			else
-				#1 PC <= next_pc;
+				PC <= next_pc;
 		end
 	end
 

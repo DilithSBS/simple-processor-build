@@ -25,6 +25,8 @@ reg readaccess;
 //Declare memory array 1024x8-bits = 256 x 32-bits
 reg [7:0] memory_array [1023:0];
 
+integer mem_file;
+
 //Initialize instruction memory
 initial
 begin
@@ -39,10 +41,14 @@ begin
     // {memory_array[10'd19], memory_array[10'd18], memory_array[10'd17], memory_array[10'd16]} = 32'b00000011000000010000000100000100; // sub 1 1 4
     
 
-    // Read the instruction comes from the program
-    $readmemb("instr_mem.mem", memory_array);
-
-
+    // Read instructions from tests/mem/instr_mem.mem (or local fallback)
+    mem_file = $fopen("tests/mem/instr_mem.mem", "r");
+    if (mem_file != 0) begin
+        $fclose(mem_file);
+        $readmemb("tests/mem/instr_mem.mem", memory_array);
+    end else begin
+        $readmemb("instr_mem.mem", memory_array);
+    end
 end
 
 

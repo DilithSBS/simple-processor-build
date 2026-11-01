@@ -1,1 +1,27 @@
-file_structure.txt
+# Simulation binaries and waveform dump files
+*.vvp
+*.vcd
+*.log
+sim/*.vvp
+
+# C compiler binaries and objects
+*.exe
+*.o
+*.out
+tools/assembler/*.exe
+
+# Generated machine code and temporary memory images
+*.machine
+instr_mem.mem
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+
+# IDE and Editor configurations
+.vscode/
+.idea/
+
+# OS metadata
+Thumbs.db
+.DS_Store

@@ -42,7 +42,8 @@
 `include "alu.v"
 `include "reg_file.v"
 `include "control_unit.v"
-`include "pc_adders.v"
+`include "pc_adder.v"
+`include "jump_branch_adder.v"
 `include "2to1_mux.v"
 `include "twos_complement.v"
 

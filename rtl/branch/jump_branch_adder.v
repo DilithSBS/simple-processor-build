@@ -1,29 +1,12 @@
 /*
 =============================================
-				ADDER MODULE      
+			JUMP-BRANCH ADDER MODULE      
 =============================================
 */
 
 `timescale 1ns/100ps
 
-// Adder module to calculate next PC
-module pc_adder (
-		input   [31:0]  PC_IN,
-		output  [31:0]  PC_OUT
-	);
-
-	// Calculate PC + 4
-	assign #1 PC_OUT = PC_IN + 32'd4;
-
-endmodule
-
-/*
-=============================================
-			JUMP-BRANCH ADDER MODULE      
-=============================================
-*/
-
-// Adder module to calculate next PC
+// Adder module to calculate jumped next PC
 module jump_branch_adder (
 		input   [31:0]  NEXT_PC,     // Next PC calculated by adder
 		input   [7:0]   OFFSET,      // Jump offset

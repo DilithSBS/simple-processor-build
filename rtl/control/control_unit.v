@@ -161,7 +161,7 @@ module control_unit(
         end
 
         
-        // ror: right rotation
+        // ROR: right rotation
         8'd16:
         begin
             // ALU performs right rotation

@@ -1,0 +1,53 @@
+simple-processor-build/
+├── docs/
+│   ├── architecture/
+│   ├── assembler/
+│   ├── isa/
+│   ├── simulation/
+│   ├── tutorials/
+│   ├── developer/
+│   └── diagrams/
+├── rtl/
+│   ├── core/
+│   │   └── cpu.v
+│   ├── control/
+│   │   └── control_unit.v
+│   ├── execute/
+│   │   └── alu.v
+│   ├── registers/
+│   │   └── reg_file.v
+│   ├── branch/
+│   │   └── pc_adders.v
+│   └── common/
+│       ├── 2to1_mux.v
+│       └── twos_complement.v
+├── tb/
+│   └── cpu_tb.v
+├── sim/
+│   └── models/
+│       └── dmem.v
+├── tools/
+│   └── assembler/
+│       └── src/
+│           └── CO2070Assembler.c
+├── programs/
+│   ├── assembly/
+│   ├── machine/
+│   └── memory/
+├── tests/
+│   ├── assembler/
+│   ├── simulation/
+│   └── fixtures/
+│       └── memory/
+├── scripts/
+├── assets/
+├── reports/
+├── .github/
+│   └── workflows/
+├── README.md
+├── LICENSE
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── CHANGELOG.md
+├── .gitignore
+└── Makefile

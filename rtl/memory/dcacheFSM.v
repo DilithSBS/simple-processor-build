@@ -1,7 +1,7 @@
 /*
 Module  : Data Cache 
-Author  : Isuru Nawinne, Kisaru Liyanage
-Date    : 25/05/2020
+Author  : Isuru Nawinne, Kisaru Liyanage, Dilith Samarakoon
+Date    : 31/08/2026
 
 Description	:
 
@@ -12,8 +12,9 @@ This file presents a skeleton implementation of the cache controller using a Fin
 
 module dcache (
 
-    input   clock,
-    input   reset,
+    input               clock,
+    input               reset,
+
 
     input               mem_busywait,       // busywait signal from main memory
     output  reg         busywait,           // busywait signal to CPU
@@ -112,15 +113,11 @@ module dcache (
     assign readdata = (read == 1) ? data_word : 8'd0;
 
 
-
-
     // Comprehensive BUSYWAIT logic
     always @(*) begin
         if (read || write) begin
-            if (hit && state == IDLE) 
-                busywait = 1'b0; // De-assert on a hit while in IDLE
-            else 
-                busywait = 1'b1; // Assert immediately on request, and hold during FSM miss handling
+            if (hit && state == IDLE) busywait = 1'b0; // De-assert on a hit while in IDLE
+            else busywait = 1'b1; // Assert immediately on request, and hold during FSM miss handling
         end 
         else begin
             busywait = 1'b0; // De-assert when CPU is not requesting anything
